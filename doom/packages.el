@@ -56,8 +56,8 @@
   :recipe (:host github :repo "orgtre/ankiorg"))
 (package! sqlite3
   :recipe (:host github :repo "pekingduck/emacs-sqlite3-api"))
-(package! org-pomodoro)
-;(package! dashboard)
+;; (package! org-pomodoro)
+;; (package! dashboard)
 (unpin! org-roam)
 (package! org-roam-ui)
 (package! org-super-agenda)
@@ -81,7 +81,7 @@
 ;;   :recipe (:host gitlab
 ;;            :repo "vherrmann/org-xournalpp"
 ;;            :files ("resources" "*.el")))
-(package! activities)
+;; (package! activities)
 (package! org-ql)
 (package! dired-preview)
 ;; (package! org-excalidraw
@@ -90,3 +90,17 @@
 ;; (package! el-easydraw
 ;;   :recipe (:host github :repo "misohena/el-easydraw"))
 (package! org-transclusion)
+;; (package! org-modern-indent
+;;   :recipe (:host github :repo "jdtsmith/org-modern-indent"))
+(package! phscroll
+  :recipe (:host github :repo "misohena/phscroll"))
+(package! org-contrib)
+(package! calfw)
+(package! calfw-org)
+(package! calfw-ical)
+(package! nov)
+(package! page-view
+  :recipe (:host github :repo "bradmont/page-view"))
+;; (package! org-present)
+(package! catppuccin-theme)
+(package! yuck-mode)

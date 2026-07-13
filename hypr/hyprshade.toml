@@ -1,0 +1,4 @@
+[[shades]]
+name = "gpt-warm-grayscale"
+start_time = 17:30:00
+end_time = 05:00:00   # optional if more than one shader has start_time
