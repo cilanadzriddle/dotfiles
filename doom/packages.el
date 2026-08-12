@@ -63,7 +63,7 @@
 (package! org-super-agenda)
 (package! org-superstar)
 (package! writeroom-mode)
-(package! org-modern)
+;; (package! org-modern)
 (package! org-fragtog)
 (package! command-log-mode)
 ;(package! perspective-el)
@@ -84,8 +84,8 @@
 ;; (package! activities)
 (package! org-ql)
 (package! dired-preview)
-;; (package! org-excalidraw
-;;   :recipe (:host github :repo "wdavew/org-excalidraw"))
+(package! org-excalidraw
+  :recipe (:host github :repo "Gleek/org-excalidraw"))
   ;; :config (org-excalidraw-directory "~/org/Excalidraw/"))
 ;; (package! el-easydraw
 ;;   :recipe (:host github :repo "misohena/el-easydraw"))
@@ -104,3 +104,4 @@
 ;; (package! org-present)
 (package! catppuccin-theme)
 (package! yuck-mode)
+(package! exec-path-from-shell)

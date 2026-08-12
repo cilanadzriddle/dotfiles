@@ -81,7 +81,21 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+(after! exec-path-from-shell
+  (dolist (var '("HYPRLAND_INSTANCE_SIGNATURE" "WAYLAND_DISPLAY" "XDG_RUNTIME_DIR"))
+    (add-to-list 'exec-path-from-shell-variables var)))
+
 (after! org
+  (use-package! org-excalidraw
+  :config
+  (setq org-excalidraw-directory "~/org/excalidraw/"))
+  (org-excalidraw-initialize)
+  (with-eval-after-load 'org-roam
+  (add-to-list 'org-roam-capture-templates
+               '("i" "Inbox / Quick Capture" entry
+                 "* %?\n:PROPERTIES:\n:CAPTURED: %U\n:END:\n"
+                 :target (file+head "inbox.org" "#+title: Inbox\n#+filetags: :inbox:\n")
+                 :empty-lines 1)))
   (setq org-roam-v2-ack t)
   (setq org-roam-dailies-capture-templates
           '(("J" "Journal" entry "** %<%I:%M %p>: %?"
@@ -173,7 +187,7 @@
                  (org-agenda-skip-function '(org-agenda-skip-entry-if 'nottodo 'todo))))))))
 
   (setq org-agenda-start-with-log-mode t)
-  (setq org-log-done 'time)
+  ;; (setq org-log-done 'time)
   (setq org-log-into-drawer t)
   (setq org-extend-today-until 3)
 
@@ -190,6 +204,8 @@
   
   (setq writeroom-width 66)
   (setq org-modern-star nil)
+  (setq org-modern-todo nil)
+  (setq org-modern-date-active nil)
   (setq org-modern-tag nil)
   ;; (setq org-modern-todo nil)
   ;; (setq org-modern-priority nil)
@@ -298,7 +314,14 @@
   ;;                (org-present-show-cursor)
   ;;                (org-present-read-write)))))
 
-  (require 'org-superstar)
+  (use-package! org-superstar
+  :hook (org-mode . org-superstar-mode)
+  :config
+  ;; Enable item bullets (change to nil if you ONLY want heading stars)
+  (setq org-superstar-prettify-item-bullets t)
+  ;; Ensure leading stars are hidden smoothly
+  (setq org-superstar-remove-leading-stars t))
+  ;; (require 'org-superstar)
   (require 'org-habit)
   (require 'org-checklist)
   (require 'phscroll)
@@ -404,7 +427,7 @@ ignoring progress cookies like [/] or [%]."
     ;; 1. Change the TODO state to ONGOING
     (org-todo "ONGOING")
     ;; 2. Prepare the command string
-    (let ((initial-command (format "pomod -t \"%s\"" heading-title)))
+    (let ((initial-command (format "~/.config/eww/scripts/pomodoro.sh -t \"%s\"" heading-title)))
       (setq current-prefix-arg nil) ; Ensure no prefix args interfere
       (call-interactively 
        (lambda (command)
@@ -465,25 +488,25 @@ ignoring progress cookies like [/] or [%]."
 (defvar-local denz/comfort-face-remap-cookies nil
   "Stores cookies for buffer-local face remappings.")
 
-(defun denz/comfort-mode-enable ()
-  ;; (setq denz/comfort-face-remap-cookies
-  ;;       (list
-  ;;        (face-remap-add-relative 'org-hide :family "Lucida Sans Unicode" :foreground "#000000")
-  ;;        (face-remap-add-relative 'org-indent :inherit 'org-hide)))
-  (blink-cursor-mode 1)
-  (setq-local cursor-type 'bar)
-  (setq-local line-spacing 2)
-  ;; (org-indent-mode -1)
-  ;; (setq-local org-hide-leading-stars nil)
-  ;; (setq-local org-superstar-leading-bullet ?\s)
-  ;; (setq-local org-indent-mode-turns-on-hiding-stars nil)
-  ;;
-  ;; (setq-local org-superstar-remove-leading-stars t)
-  ;;
-  (org-superstar-restart)
-  ;; (setq org-superstar-leading-bullet ?\s)
-  ;; (setq org-superstar-remove-leading-stars t)
-  (hl-line-mode -1))
+;; (defun denz/comfort-mode-enable ()
+;;   ;; (setq denz/comfort-face-remap-cookies
+;;   ;;       (list
+;;   ;;        (face-remap-add-relative 'org-hide :family "Lucida Sans Unicode" :foreground "#000000")
+;;   ;;        (face-remap-add-relative 'org-indent :inherit 'org-hide)))
+;;   (blink-cursor-mode 1)
+;;   (setq-local cursor-type 'bar)
+;;   (setq-local line-spacing 2)
+;;   ;; (org-indent-mode -1)
+;;   ;; (setq-local org-hide-leading-stars nil)
+;;   ;; (setq-local org-superstar-leading-bullet ?\s)
+;;   ;; (setq-local org-indent-mode-turns-on-hiding-stars nil)
+;;   ;;
+;;   ;; (setq-local org-superstar-remove-leading-stars t)
+;;   ;;
+;;   (org-superstar-restart)
+;;   ;; (setq org-superstar-leading-bullet ?\s)
+;;   ;; (setq org-superstar-remove-leading-stars t)
+;;   (hl-line-mode -1))
   ;; (org-indent-mode -1)
   ;; (setq org-hide-leading-stars t)
   ;; (setq org-superstar-remove-leading-stars t)
@@ -520,24 +543,41 @@ ignoring progress cookies like [/] or [%]."
 ;;      `(org-level-2 ((t (:inherit outline-2))))
 ;;      `(org-level-1 ((t (:inherit outline-1)))))))
 
+;; (defun denz/comfort-mode-disable ()
+;;   ;; (mapc #'face-remap-remove-relative denz/comfort-face-remap-cookies)
+;;   ;; (setq denz/comfort-face-remap-cookies nil)
+;;   (blink-cursor-mode -1)
+;;   (setq-local cursor-type 'box)
+;;   (setq-local line-spacing nil)
+;;   ;;
+;;   ;; (setq-local org-superstar-remove-leading-stars nil)
+;;   ;; (org-indent-mode 1)
+;;   ;;
+;;   ;;
+;;   ;; (setq-local org-hide-leading-stars t)
+;;   ;; (setq-local org-superstar-leading-bullet " ․")
+;;   ;; (setq-local org-indent-mode-turns-on-hiding-stars t)
+;;   ;;
+;;   (org-superstar-restart)
+  
+;;   ;; Restore standard theme scaling when leaving Writeroom
+;;   (when (eq major-mode 'org-mode)
+;;     (setq-local face-remapping-alist nil)))
+
+(defun denz/comfort-mode-enable ()
+  (blink-cursor-mode 1)
+  (setq-local cursor-type 'bar)
+  (setq-local line-spacing 2)
+  (when (require 'org-superstar nil t)
+    (org-superstar-restart))
+  (hl-line-mode -1))
+
 (defun denz/comfort-mode-disable ()
-  ;; (mapc #'face-remap-remove-relative denz/comfort-face-remap-cookies)
-  ;; (setq denz/comfort-face-remap-cookies nil)
   (blink-cursor-mode -1)
   (setq-local cursor-type 'box)
   (setq-local line-spacing nil)
-  ;;
-  ;; (setq-local org-superstar-remove-leading-stars nil)
-  ;; (org-indent-mode 1)
-  ;;
-  ;;
-  ;; (setq-local org-hide-leading-stars t)
-  ;; (setq-local org-superstar-leading-bullet " ․")
-  ;; (setq-local org-indent-mode-turns-on-hiding-stars t)
-  ;;
-  (org-superstar-restart)
-  
-  ;; Restore standard theme scaling when leaving Writeroom
+  (when (require 'org-superstar nil t)
+    (org-superstar-restart))
   (when (eq major-mode 'org-mode)
     (setq-local face-remapping-alist nil)))
 
@@ -598,7 +638,7 @@ ignoring progress cookies like [/] or [%]."
 ;; (remove-hook '+dashboard-functions #'dashboard-widget-spacer)
 (add-hook! 'org-mode-hook #'doom-disable-line-numbers-h)
 ;; Remove this line from your init file
-(add-hook! 'org-agenda-finalize-hook #'org-modern-agenda)
+;; (add-hook! 'org-agenda-finalize-hook #'org-modern-agenda)
 
 (add-hook! 'org-mode-hook #'doom-disable-line-numbers-h)
 (add-hook! 'fountain-mode-hook #'doom-disable-line-numbers-h)
@@ -609,9 +649,9 @@ ignoring progress cookies like [/] or [%]."
                             (setq buffer-face-mode-face '(:family "Lucida Sans Unicode"))
                             (buffer-face-mode)))
 (add-hook! 'org-mode-hook 'org-fragtog-mode)
-(add-hook 'org-mode-hook 'writeroom-mode)
+(add-hook! 'org-mode-hook 'writeroom-mode)
 ;; (add-hook 'org-todo-repeat-hook #'org-reset-checkbox-state-subtree)
-(add-hook 'org-mode-hook (lambda () (org-superstar-mode 1)))
+;; (add-hook! 'org-mode-hook (lambda () (org-superstar-mode 1)))
 ;; (add-hook 'org-mode-hook #'org-modern-indent-mode 90)
 ;;(add-hook! 'emacs-startup-hook #'denz/command-log-mode-on-startup)
 ;;(add-hook! 'emacs-startup-hook #'denz/double-dashboard)
@@ -619,6 +659,8 @@ ignoring progress cookies like [/] or [%]."
 ;; Alpha background
 (add-to-list 'default-frame-alist '(alpha-background . 75))
 
+;; (add-to-list 'safe-local-variable-values '(org-enforce-todo-checkbox-dependencies . nil))
+;; (add-to-list 'safe-local-eval-forms '(writeroom-mode -1))
 
 ;;;;;;;;;;
 ;; TEST ;;
