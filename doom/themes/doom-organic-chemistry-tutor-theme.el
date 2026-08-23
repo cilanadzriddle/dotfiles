@@ -185,7 +185,7 @@
    ((org-link &override) :foreground cyan :underline t)
    (org-priority :foreground red)
    ((org-table &override) :foreground teal :background base0)
-   ((org-todo &override) :foreground red :weight 'bold)
+   ((org-todo &override) :foreground "ffffff" :weight 'bold)
    (org-warning :foreground magenta))
 
   ;;;; Base theme variable overrides
